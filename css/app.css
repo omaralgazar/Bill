@@ -1,0 +1,295 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    background: #f4f6f9;
+    color: #222;
+    direction: rtl;
+}
+
+.loading-screen {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    font-size: 1.2rem;
+    color: #666;
+}
+
+.content {
+    max-width: 700px;
+    margin: 0 auto;
+    padding-bottom: 80px;
+}
+
+h1 {
+    font-size: 1.5rem;
+    margin: 1rem 0;
+    color: #1E3A5F;
+}
+
+.page-header {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 1rem;
+}
+
+.back-link {
+    color: #1E3A5F;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+/* Dashboard */
+.dashboard-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 8px 0;
+}
+
+.dashboard-card {
+    background: white;
+    border-radius: 14px;
+    padding: 18px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    border-right: 6px solid #ccc;
+    cursor: pointer;
+    transition: transform 0.15s ease;
+}
+
+.dashboard-card:active {
+    transform: scale(0.98);
+}
+
+.card-electricity { border-right-color: #F5A623; }
+.card-water { border-right-color: #2196F3; }
+.card-gas { border-right-color: #E63946; }
+
+.card-icon {
+    font-size: 2rem;
+}
+
+.dashboard-card h2 {
+    margin: 4px 0 12px 0;
+    font-size: 1.2rem;
+}
+
+.stat-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 0;
+    font-size: 0.95rem;
+}
+
+.stat-label {
+    color: #666;
+}
+
+.stat-value {
+    font-weight: 700;
+    color: #1E3A5F;
+}
+
+.add-btn {
+    margin-top: 12px;
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    background: #1E3A5F;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* Bill list */
+.bill-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.bill-item {
+    background: white;
+    border-radius: 12px;
+    padding: 14px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    cursor: pointer;
+}
+
+.bill-item-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.bill-item-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.bill-thumb {
+    width: 56px;
+    height: 56px;
+    border-radius: 10px;
+    object-fit: cover;
+    flex-shrink: 0;
+    background: #eef1f5;
+}
+
+.bill-thumb-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+}
+
+.bill-main {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1rem;
+    margin-bottom: 6px;
+}
+
+.img-status {
+    font-size: 0.85rem;
+    color: #888;
+    margin: 4px 0;
+}
+
+.image-preview-wrap {
+    margin-top: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.image-preview {
+    max-width: 100%;
+    max-height: 260px;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+}
+
+.btn-remove-img {
+    background: none;
+    border: 1px solid #E63946;
+    color: #E63946;
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    cursor: pointer;
+}
+
+.bill-date {
+    color: #888;
+    font-size: 0.85rem;
+}
+
+.bill-details {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    color: #444;
+}
+
+.bill-amount {
+    font-weight: 700;
+    color: #1E3A5F;
+}
+
+.empty-msg {
+    color: #888;
+    text-align: center;
+    margin-top: 40px;
+}
+
+.fab-add {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1E3A5F;
+    color: white;
+    border: none;
+    padding: 14px 24px;
+    border-radius: 30px;
+    font-weight: 700;
+    font-size: 1rem;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    cursor: pointer;
+}
+
+/* Form */
+.form-group {
+    margin-bottom: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.form-group label {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #333;
+}
+
+.form-control {
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+}
+
+.form-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.btn-save {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    background: #1E3A5F;
+    color: white;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.btn-delete {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    background: #E63946;
+    color: white;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+#blazor-error-ui {
+    background: lightyellow;
+    bottom: 0;
+    box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);
+    display: none;
+    left: 0;
+    padding: 0.6rem 1.25rem 0.7rem 1.25rem;
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
+}
+
+#blazor-error-ui .dismiss {
+    cursor: pointer;
+    position: absolute;
+    left: 0.75rem;
+    top: 0.5rem;
+}
