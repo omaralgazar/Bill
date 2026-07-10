@@ -53,9 +53,11 @@ else
         }
         _loading = false;
     }
+    private void GoToCategory(BillCategory category)
+        => Nav.NavigateTo($"category/{category}");
 
-    private void GoToCategory(BillCategory category) => Nav.NavigateTo($"/category/{category}");
-    private void GoToAdd(BillCategory category) => Nav.NavigateTo($"/bill/add/{category}");
+    private void GoToAdd(BillCategory category)
+        => Nav.NavigateTo($"bill/add/{category}");
 
     private string CategoryName(BillCategory c) => c switch
     {
