@@ -1,0 +1,84 @@
+@page "/category/{CategoryName}"
+@inject BillService BillService
+@inject NavigationManager Nav
+
+<PageTitle>فواتير @DisplayName</PageTitle>
+
+<div class="page-header">
+    <a href="/" class="back-link">← رجوع</a>
+    <h1>فواتير @DisplayName</h1>
+</div>
+
+@if (_loading)
+{
+    <p>جاري التحميل...</p>
+}
+else if (!_bills.Any())
+{
+    <p class="empty-msg">لا توجد فواتير بعد.</p>
+}
+else
+{
+    <div class="bill-list">
+        @foreach (var bill in _bills)
+        {
+            <div class="bill-item" @onclick="() => GoToEdit(bill.Id)">
+                <div class="bill-item-row">
+                    @if (!string.IsNullOrEmpty(bill.ImageBase64))
+                    {
+                        <img src="@bill.ImageBase64" class="bill-thumb" alt="صورة الفاتورة" />
+                    }
+                    else
+                    {
+                        <div class="bill-thumb bill-thumb-placeholder">📄</div>
+                    }
+                    <div class="bill-item-info">
+                        <div class="bill-main">
+                            <strong>@bill.Date.ToString("yyyy-MM-dd")</strong>
+                        </div>
+                        <div class="bill-details">
+                            <span>@ReadingLabel: @bill.MeterReading</span>
+                            <span class="bill-amount">@bill.Amount ج.م</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+<button class="fab-add" @onclick="GoToAdd">+ إضافة فاتورة</button>
+
+@code {
+    [Parameter] public string CategoryName { get; set; } = string.Empty;
+
+    private BillCategory _category;
+    private List<BillItem> _bills = new();
+    private bool _loading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _category = Enum.Parse<BillCategory>(CategoryName);
+        _bills = await BillService.GetBillsByCategoryAsync(_category);
+        _loading = false;
+    }
+
+    private string DisplayName => _category switch
+    {
+        BillCategory.Electricity => "الكهرباء",
+        BillCategory.Water => "المياه",
+        BillCategory.Gas => "الغاز",
+        _ => _category.ToString()
+    };
+
+    private string ReadingLabel => _category switch
+    {
+        BillCategory.Electricity => "كيلوهات",
+        BillCategory.Water => "أمتار",
+        BillCategory.Gas => "قراءة العداد",
+        _ => "القراءة"
+    };
+
+    private void GoToEdit(Guid id) => Nav.NavigateTo($"/bill/edit/{id}");
+    private void GoToAdd() => Nav.NavigateTo($"/bill/add/{_category}");
+}

@@ -1,0 +1,165 @@
+@page "/bill/add/{CategoryName}"
+@page "/bill/edit/{BillId:guid}"
+@inject BillService BillService
+@inject NavigationManager Nav
+@inject IJSRuntime JS
+
+<PageTitle>@(_isEditMode ? "تعديل فاتورة" : "إضافة فاتورة")</PageTitle>
+
+<div class="page-header">
+    <a href="javascript:history.back()" class="back-link">← رجوع</a>
+    <h1>@(_isEditMode ? "تعديل فاتورة" : "إضافة فاتورة جديدة")</h1>
+</div>
+
+<EditForm Model="_model" OnValidSubmit="Save">
+    <div class="form-group">
+        <label>نوع الفاتورة</label>
+        <select class="form-control" value="@_model.Category" @onchange="OnCategoryChanged" disabled="@_isEditMode">
+            <option value="@BillCategory.Electricity">كهرباء</option>
+            <option value="@BillCategory.Water">مياه</option>
+            <option value="@BillCategory.Gas">غاز</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>صورة الفاتورة</label>
+        <InputFile OnChange="OnImageSelected" accept="image/*" class="form-control" />
+
+        @if (_isProcessingImage)
+        {
+            <p class="img-status">جاري معالجة الصورة...</p>
+        }
+
+        @if (!string.IsNullOrEmpty(_model.ImageBase64))
+        {
+            <div class="image-preview-wrap">
+                <img src="@_model.ImageBase64" class="image-preview" alt="صورة الفاتورة" />
+                <button type="button" class="btn-remove-img" @onclick="RemoveImage">إزالة الصورة</button>
+            </div>
+        }
+    </div>
+
+    <div class="form-group">
+        <label>التاريخ</label>
+        <InputDate class="form-control" @bind-Value="_model.Date" />
+    </div>
+
+    <div class="form-group">
+        <label>القيمة (ج.م)</label>
+        <InputNumber class="form-control" @bind-Value="_model.Amount" />
+    </div>
+
+    <div class="form-group">
+        <label>@ReadingLabel</label>
+        <InputNumber class="form-control" @bind-Value="_model.MeterReading" />
+    </div>
+
+    <div class="form-actions">
+        <button type="submit" class="btn-save">حفظ</button>
+        @if (_isEditMode)
+        {
+            <button type="button" class="btn-delete" @onclick="ConfirmDelete">حذف</button>
+        }
+    </div>
+</EditForm>
+
+@code {
+    [Parameter] public string? CategoryName { get; set; }
+    [Parameter] public Guid? BillId { get; set; }
+
+    private BillItem _model = new();
+    private bool _isEditMode = false;
+    private bool _isProcessingImage = false;
+
+    private const int MaxOriginalFileSize = 15_000_000; // 15MB حد أقصى للملف الأصلي قبل الضغط
+    private const int MaxImageWidth = 900;
+    private const double JpegQuality = 0.6;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (BillId is not null)
+        {
+            _isEditMode = true;
+            var existing = await BillService.GetBillByIdAsync(BillId.Value);
+            if (existing is not null)
+            {
+                _model = existing;
+            }
+        }
+        else if (!string.IsNullOrEmpty(CategoryName))
+        {
+            _model.Category = Enum.Parse<BillCategory>(CategoryName);
+        }
+    }
+
+    private async Task OnImageSelected(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+        if (file is null) return;
+
+        _isProcessingImage = true;
+        StateHasChanged();
+
+        try
+        {
+            using var stream = file.OpenReadStream(MaxOriginalFileSize);
+            using var ms = new MemoryStream();
+            await stream.CopyToAsync(ms);
+            var base64 = Convert.ToBase64String(ms.ToArray());
+            var dataUrl = $"data:{file.ContentType};base64,{base64}";
+
+            // ضغط وتصغير الصورة عشان متاخدش مساحة كبيرة في التخزين المحلي
+            var resized = await JS.InvokeAsync<string>("imageHelper.resize", dataUrl, MaxImageWidth, JpegQuality);
+            _model.ImageBase64 = resized;
+        }
+        catch (Exception)
+        {
+            // لو الملف كبير جدًا أو حصل خطأ، متبقاش الصورة القديمة متاثرة
+        }
+        finally
+        {
+            _isProcessingImage = false;
+            StateHasChanged();
+        }
+    }
+
+    private void RemoveImage()
+    {
+        _model.ImageBase64 = null;
+    }
+
+    private void OnCategoryChanged(ChangeEventArgs e)
+    {
+        if (Enum.TryParse<BillCategory>(e.Value?.ToString(), out var cat))
+        {
+            _model.Category = cat;
+        }
+    }
+
+    private string ReadingLabel => _model.Category switch
+    {
+        BillCategory.Electricity => "عدد الكيلوهات الحالية في العداد",
+        BillCategory.Water => "عدد الأمتار الحالية في العداد",
+        BillCategory.Gas => "قراءة العداد الحالية",
+        _ => "القراءة"
+    };
+
+    private async Task Save()
+    {
+        if (_isEditMode)
+        {
+            await BillService.UpdateBillAsync(_model);
+        }
+        else
+        {
+            await BillService.AddBillAsync(_model);
+        }
+        Nav.NavigateTo($"/category/{_model.Category}");
+    }
+
+    private async Task ConfirmDelete()
+    {
+        await BillService.DeleteBillAsync(_model.Id);
+        Nav.NavigateTo($"/category/{_model.Category}");
+    }
+}

@@ -1,0 +1,83 @@
+@page "/"
+@inject BillService BillService
+@inject NavigationManager Nav
+
+<PageTitle>فواتيري</PageTitle>
+
+<h1>لوحة التحكم</h1>
+
+@if (_loading)
+{
+    <p>جاري التحميل...</p>
+}
+else
+{
+    <div class="dashboard-grid">
+        @foreach (var category in Enum.GetValues<BillCategory>())
+        {
+            var stats = _stats[category];
+            <div class="dashboard-card @CategoryClass(category)" @onclick="() => GoToCategory(category)">
+                <div class="card-icon">@CategoryIcon(category)</div>
+                <h2>@CategoryName(category)</h2>
+
+                <div class="stat-row">
+                    <span class="stat-label">عدد مرات الشحن هذا الشهر:</span>
+                    <span class="stat-value">@stats.ChargesThisMonth</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">آخر شحنة:</span>
+                    <span class="stat-value">@(stats.LastChargeDate?.ToString("yyyy-MM-dd") ?? "لا يوجد")</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">آخر مبلغ:</span>
+                    <span class="stat-value">@(stats.LastChargeAmount is not null ? $"{stats.LastChargeAmount} ج.م" : "لا يوجد")</span>
+                </div>
+
+                <button class="add-btn" @onclick="() => GoToAdd(category)" @onclick:stopPropagation="true">
+                    + إضافة فاتورة
+                </button>
+            </div>
+        }
+    </div>
+}
+
+@code {
+    private bool _loading = true;
+    private Dictionary<BillCategory, DashboardStats> _stats = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        foreach (var category in Enum.GetValues<BillCategory>())
+        {
+            _stats[category] = await BillService.GetDashboardStatsAsync(category);
+        }
+        _loading = false;
+    }
+
+    private void GoToCategory(BillCategory category) => Nav.NavigateTo($"/category/{category}");
+    private void GoToAdd(BillCategory category) => Nav.NavigateTo($"/bill/add/{category}");
+
+    private string CategoryName(BillCategory c) => c switch
+    {
+        BillCategory.Electricity => "الكهرباء",
+        BillCategory.Water => "المياه",
+        BillCategory.Gas => "الغاز",
+        _ => c.ToString()
+    };
+
+    private string CategoryIcon(BillCategory c) => c switch
+    {
+        BillCategory.Electricity => "⚡",
+        BillCategory.Water => "💧",
+        BillCategory.Gas => "🔥",
+        _ => "📄"
+    };
+
+    private string CategoryClass(BillCategory c) => c switch
+    {
+        BillCategory.Electricity => "card-electricity",
+        BillCategory.Water => "card-water",
+        BillCategory.Gas => "card-gas",
+        _ => ""
+    };
+}
