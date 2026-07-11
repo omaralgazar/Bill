@@ -1,4 +1,4 @@
-/* Manifest version: WMyBpR3X */
+/* Manifest version: SxMcybwz */
 // حدد اسم الكاش عشان تقدر تحدثه لاحقًا لما تعمل نشر جديد
 const cacheNamePrefix = 'offline-cache-';
 const cacheName = `${cacheNamePrefix}v1`;

@@ -1,7 +1,7 @@
 {
   "mainAssemblyName": "Bill",
   "resources": {
-    "hash": "sha256-Jue6oY7UrtfouD3Y+o8Xn/NppE25xuYAcDgCEOZ0Ly4=",
+    "hash": "sha256-LvNlzfckRiOj9nKLTo0uaYB30TsaeidM+pnkuv+Lfsw=",
     "jsModuleNative": {
       "dotnet.native.js": "sha256-9Fzd5We95Rp03dEKIAbYjPDR3eWyLbmjMlYStvxyiok="
     },
@@ -56,7 +56,7 @@
       "System.Threading.wasm": "sha256-nDQEhXyEi1hXuAlcdl+JUHT1UdazXnoLqzw0gnLqOXM=",
       "System.wasm": "sha256-PUc71Jd5nvz5F65sAd0C3ZORcUzYK2JSfSDmE+Drn0Q=",
       "System.Private.CoreLib.wasm": "sha256-TD2d2XwLSvYVrdxqpM7G9CU8nAcb6GFfCjghqIfP0ec=",
-      "Bill.wasm": "sha256-l6ZNO7di+s8lH8NO37+HN/IOA+P220IxosbOO3+H8aU="
+      "Bill.wasm": "sha256-RffD5EKCAhCZJC2XKqWZYzEysTpWJwf3jU67PL3jlvg="
     }
   },
   "cacheBootResources": true,
