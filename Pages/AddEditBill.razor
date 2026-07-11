@@ -154,12 +154,12 @@
         {
             await BillService.AddBillAsync(_model);
         }
-        Nav.NavigateTo($"/category/{_model.Category}");
+        Nav.NavigateTo($"category/{_model.Category}");
     }
 
     private async Task ConfirmDelete()
     {
         await BillService.DeleteBillAsync(_model.Id);
-        Nav.NavigateTo($"/category/{_model.Category}");
+        Nav.NavigateTo($"category/{_model.Category}");
     }
 }

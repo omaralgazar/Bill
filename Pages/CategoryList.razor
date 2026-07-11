@@ -5,7 +5,7 @@
 <PageTitle>فواتير @DisplayName</PageTitle>
 
 <div class="page-header">
-    <a href="/" class="back-link">← رجوع</a>
+    <a href="javascript:void(0)" @onclick="GoHome" class="back-link">← رجوع</a>
     <h1>فواتير @DisplayName</h1>
 </div>
 
@@ -79,6 +79,7 @@ else
         _ => "القراءة"
     };
 
-    private void GoToEdit(Guid id) => Nav.NavigateTo($"/bill/edit/{id}");
-    private void GoToAdd() => Nav.NavigateTo($"/bill/add/{_category}");
+    private void GoToEdit(Guid id) => Nav.NavigateTo($"bill/edit/{id}");
+    private void GoToAdd() => Nav.NavigateTo($"bill/add/{_category}");
+    private void GoHome() => Nav.NavigateTo("");
 }
